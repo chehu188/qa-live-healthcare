@@ -228,13 +228,13 @@ const submitAppointment = async () => {
 
   submitting.value = false;
 
-  if (result.success && result.appointment) {
+  if (result) {
     confirmModalVisible.value = false;
-    successAppointmentNo.value = result.appointment.appointmentNo;
+    successAppointmentNo.value = result.appointmentNo;
     successModalVisible.value = true;
     selectedSchedule.value = null;
   } else {
-    message.error(result.error || '预约失败，请重试');
+    message.error('预约失败，请重试');
   }
 };
 

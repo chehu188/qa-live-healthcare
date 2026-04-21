@@ -1,46 +1,50 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import Home from '../views/Home.vue';
-import Consultation from '../views/Consultation.vue';
-import DoctorLogin from '../views/DoctorLogin.vue';
-import DoctorRoom from '../views/DoctorRoom.vue';
-import Doctors from '../views/Doctors.vue';
-import About from '../views/About.vue';
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () => import('../views/Home.vue'),
   },
   {
     path: '/consultation',
     name: 'Consultation',
-    component: Consultation,
+    component: () => import('../views/Consultation.vue'),
   },
   {
     path: '/consultation/:doctorUsername',
     name: 'ConsultationRoom',
-    component: Consultation,
+    component: () => import('../views/Consultation.vue'),
   },
   {
     path: '/doctors',
     name: 'Doctors',
-    component: Doctors,
+    component: () => import('../views/Doctors.vue'),
   },
   {
     path: '/about',
     name: 'About',
-    component: About,
+    component: () => import('../views/About.vue'),
   },
   {
     path: '/doctor/login',
     name: 'DoctorLogin',
-    component: DoctorLogin,
+    component: () => import('../views/DoctorLogin.vue'),
   },
   {
     path: '/doctor/room/:username',
     name: 'DoctorRoom',
-    component: DoctorRoom,
+    component: () => import('../views/DoctorRoom.vue'),
+  },
+  {
+    path: '/appointment/:doctorUsername',
+    name: 'AppointmentBooking',
+    component: () => import('../views/AppointmentBooking.vue'),
+  },
+  {
+    path: '/my-appointments',
+    name: 'MyAppointments',
+    component: () => import('../views/MyAppointments.vue'),
   },
 ];
 

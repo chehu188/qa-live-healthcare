@@ -25,6 +25,9 @@
           <a-button size="large" @click="navigateTo('/doctors')">
             查看医生
           </a-button>
+          <a-button size="large" @click="navigateTo('/my-appointments')">
+            我的预约
+          </a-button>
         </div>
       </div>
       <div class="hero-image">
@@ -96,7 +99,14 @@
             </div>
           </div>
           <div class="room-footer">
-            <a-button type="primary" block>进入诊室</a-button>
+            <a-space direction="vertical" style="width: 100%">
+              <a-button type="primary" block @click.stop="navigateTo(`/consultation/${doctor.username}`)">
+                进入诊室
+              </a-button>
+              <a-button block @click.stop="navigateTo(`/appointment/${doctor.username}`)">
+                预约挂号
+              </a-button>
+            </a-space>
           </div>
         </div>
       </div>

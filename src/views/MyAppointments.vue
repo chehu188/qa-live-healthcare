@@ -222,21 +222,21 @@ const cancelAppointment = async () => {
 
   cancelling.value = false;
 
-  if (result.success) {
+  if (result) {
     message.success('预约已取消');
     cancelModalVisible.value = false;
   } else {
-    message.error(result.error || '取消失败');
+    message.error('取消失败');
   }
 };
 
 // 确认预约（线下确认）
 const confirmAppointmentHandler = async (appointmentId: string) => {
   const result = store.confirmAppointment(appointmentId);
-  if (result.success) {
+  if (result) {
     message.success('已确认预约');
   } else {
-    message.error(result.error || '操作失败');
+    message.error('操作失败');
   }
 };
 
