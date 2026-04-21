@@ -1,0 +1,102 @@
+[
+  {
+    "id": "sch001",
+    "doctorUsername": "dr-zhang-wei",
+    "date": "2026-04-20",
+    "timeSlot": "morning",
+    "totalQuota": 20,
+    "bookedCount": 5,
+    "createdAt": "2026-04-10T08:00:00Z",
+    "updatedAt": "2026-04-15T10:30:00Z"
+  },
+  {
+    "id": "sch002",
+    "doctorUsername": "dr-zhang-wei",
+    "date": "2026-04-20",
+    "timeSlot": "afternoon",
+    "totalQuota": 15,
+    "bookedCount": 12,
+    "createdAt": "2026-04-10T08:00:00Z",
+    "updatedAt": "2026-04-15T14:20:00Z"
+  },
+  {
+    "id": "sch003",
+    "doctorUsername": "dr-zhang-wei",
+    "date": "2026-04-21",
+    "timeSlot": "morning",
+    "totalQuota": 20,
+    "bookedCount": 0,
+    "createdAt": "2026-04-10T08:00:00Z",
+    "updatedAt": "2026-04-10T08:00:00Z"
+  },
+  {
+    "id": "sch004",
+    "doctorUsername": "dr-li-na",
+    "date": "2026-04-20",
+    "timeSlot": "morning",
+    "totalQuota": 25,
+    "bookedCount": 18,
+    "createdAt": "2026-04-11T09:00:00Z",
+    "updatedAt": "2026-04-16T11:00:00Z"
+  },
+  {
+    "id": "sch005",
+    "doctorUsername": "dr-li-na",
+    "date": "2026-04-20",
+    "timeSlot": "afternoon",
+    "totalQuota": 20,
+    "bookedCount": 20,
+    "createdAt": "2026-04-11T09:00:00Z",
+    "updatedAt": "2026-04-16T15:30:00Z"
+  },
+  {
+    "id": "sch006",
+    "doctorUsername": "dr-li-na",
+    "date": "2026-04-22",
+    "timeSlot": "morning",
+    "totalQuota": 25,
+    "bookedCount": 10,
+    "createdAt": "2026-04-11T09:00:00Z",
+    "updatedAt": "2026-04-17T09:00:00Z"
+  },
+  {
+    "id": "sch007",
+    "doctorUsername": "dr-wang-qiang",
+    "date": "2026-04-21",
+    "timeSlot": "afternoon",
+    "totalQuota": 15,
+    "bookedCount": 8,
+    "createdAt": "2026-04-12T10:00:00Z",
+    "updatedAt": "2026-04-16T16:00:00Z"
+  },
+  {
+    "id": "sch008",
+    "doctorUsername": "dr-wang-qiang",
+    "date": "2026-04-23",
+    "timeSlot": "morning",
+    "totalQuota": 15,
+    "bookedCount": 0,
+    "createdAt": "2026-04-12T10:00:00Z",
+    "updatedAt": "2026-04-12T10:00:00Z"
+  },
+  {
+    "id": "sch009",
+    "doctorUsername": "dr-chen-jie",
+    "date": "2026-04-22",
+    "timeSlot": "morning",
+    "totalQuota": 20,
+    "bookedCount": 6,
+    "createdAt": "2026-04-13T11:00:00Z",
+    "updatedAt": "2026-04-17T08:00:00Z"
+  },
+  {
+    "id": "sch010",
+    "doctorUsername": "dr-chen-jie",
+    "date": "2026-04-22",
+    "timeSlot": "afternoon",
+    "totalQuota": 15,
+    "bookedCount": 3,
+    "createdAt": "2026-04-13T11:00:00Z",
+    "updatedAt": "2026-04-17T14:00:00Z"
+  }
+]

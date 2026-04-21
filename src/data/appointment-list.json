@@ -1,0 +1,72 @@
+[
+  {
+    "id": "apt001",
+    "appointmentNo": "APT20260420001",
+    "patientUsername": "patient-test001",
+    "doctorUsername": "dr-zhang-wei",
+    "scheduleId": "sch001",
+    "status": "confirmed",
+    "createdAt": "2026-04-15T09:30:00Z",
+    "updatedAt": "2026-04-15T10:00:00Z"
+  },
+  {
+    "id": "apt002",
+    "appointmentNo": "APT20260420002",
+    "patientUsername": "patient-test002",
+    "doctorUsername": "dr-zhang-wei",
+    "scheduleId": "sch001",
+    "status": "pending",
+    "createdAt": "2026-04-15T11:00:00Z",
+    "updatedAt": "2026-04-15T11:00:00Z"
+  },
+  {
+    "id": "apt003",
+    "appointmentNo": "APT20260420003",
+    "patientUsername": "patient-test003",
+    "doctorUsername": "dr-zhang-wei",
+    "scheduleId": "sch002",
+    "status": "confirmed",
+    "createdAt": "2026-04-14T14:20:00Z",
+    "updatedAt": "2026-04-14T15:00:00Z"
+  },
+  {
+    "id": "apt004",
+    "appointmentNo": "APT20260420004",
+    "patientUsername": "patient-test004",
+    "doctorUsername": "dr-li-na",
+    "scheduleId": "sch004",
+    "status": "pending",
+    "createdAt": "2026-04-16T08:30:00Z",
+    "updatedAt": "2026-04-16T08:30:00Z"
+  },
+  {
+    "id": "apt005",
+    "appointmentNo": "APT20260420005",
+    "patientUsername": "patient-test005",
+    "doctorUsername": "dr-li-na",
+    "scheduleId": "sch004",
+    "status": "completed",
+    "createdAt": "2026-04-15T10:00:00Z",
+    "updatedAt": "2026-04-15T12:30:00Z"
+  },
+  {
+    "id": "apt006",
+    "appointmentNo": "APT20260420006",
+    "patientUsername": "patient-test006",
+    "doctorUsername": "dr-wang-qiang",
+    "scheduleId": "sch007",
+    "status": "confirmed",
+    "createdAt": "2026-04-15T16:00:00Z",
+    "updatedAt": "2026-04-15T16:30:00Z"
+  },
+  {
+    "id": "apt007",
+    "appointmentNo": "APT20260420007",
+    "patientUsername": "patient-test007",
+    "doctorUsername": "dr-chen-jie",
+    "scheduleId": "sch009",
+    "status": "cancelled",
+    "createdAt": "2026-04-16T09:00:00Z",
+    "updatedAt": "2026-04-16T11:00:00Z"
+  }
+]
