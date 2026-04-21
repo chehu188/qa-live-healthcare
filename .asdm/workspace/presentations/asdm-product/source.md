@@ -1,0 +1,385 @@
+# ASDM - AI驱动的软件开发方法论
+
+**Agentic Software Development Methodology**
+
+ASDM 是一种以 AI Agent 为核心的软件开发方法论，通过人机协作实现高效、规范、可追踪的软件开发流程。
+
+---
+
+# 什么是 ASDM？
+
+## 核心理念
+
+ASDM 的核心原则：**开发人员只需描述"做什么"，AI 会负责实现"怎么做"**
+
+### 三大支柱
+
+- **自动化**: 通过 AI 自动完成繁琐的开发任务
+- **规范化**: 使用统一的模板和流程确保开发质量
+- **可追踪**: 记录所有开发活动，便于审计和回溯
+
+### 价值主张
+
+- 🚀 开发效率提升 3-5 倍
+- 📋 流程标准化，减少沟通成本
+- 🔍 全流程可追溯，质量有保障
+- 🤖 AI 辅助决策，降低技术门槛
+
+---
+
+# ASDM 人员与 AI 职责分工
+
+## 开发人员职责
+
+- 编写 README.md 描述工具集的功能和使用方式
+- 提供示例，说明期望的输入输出
+- 验证结果，检查 AI 生成的工具集是否符合要求
+
+## AI 职责
+
+- 生成 actions/ 目录，根据 README.md 自动生成动作指令
+- 生成 spec/ 目录，创建输出文档的模板
+- 生成 INSTALL.md，创建安装步骤文档
+
+### 协作模式
+
+```
+开发人员 → 编写 README.md → 描述"做什么"
+    ↓
+AI Agent → 生成 Actions & Specs → 实现"怎么做"
+    ↓
+开发人员 → 验证输出 → 确认质量
+```
+
+---
+
+# ASDM 项目目录结构
+
+## 核心目录
+
+```
+.asdm/
+├── contexts/              # 通用上下文
+│   ├── index.md          # 入口文件（必读）
+│   ├── architecture.md   # 架构设计
+│   ├── data-models.md    # 数据模型
+│   └── api.md            # API 文档
+├── toolsets/             # 工具集
+│   ├── context-builder/  # 上下文构建器
+│   ├── prd-builder/      # PRD 构建器
+│   └── presentation-builder/  # 演示构建器
+└── workspace/            # 工作区
+    └── features/         # 功能特性
+```
+
+## 上下文文件说明
+
+### 渐进式加载策略
+
+| 阶段 | 加载内容 | 说明 |
+|------|----------|------|
+| 初始阶段 | index.md | 必读，了解项目整体结构 |
+| 规划阶段 | 按需加载 | 根据功能需求加载相关上下文 |
+| 执行阶段 | 按需加载 | 根据任务需求加载相关上下文 |
+
+---
+
+# ASDM Toolset 体系
+
+## 已有工具集
+
+### Context Builder (上下文构建器)
+
+- **toolset-id**: `context-builder`
+- **功能**: 自动分析项目代码，生成标准化上下文文档
+- **命令**: `/asdm-context-build`, `/asdm-context-update`
+
+### PRD Builder (PRD构建器)
+
+- **toolset-id**: `prd-builder`
+- **功能**: 从需求描述到任务执行的完整开发流程管理
+- **命令**: `/asdm-prd-planning`, `/asdm-prd-breakdown`, `/asdm-prd-execution`
+
+### Presentation Builder (演示构建器)
+
+- **toolset-id**: `presentation-builder`
+- **功能**: 将 Markdown 文件转换为交互式演示网站
+- **命令**: `/asdm-build-demo`, `/asdm-preview-demo`
+
+## 三阶段工作流
+
+```
+1. Planning (规划) → 生成 Feature PRD
+2. Breakdown (分解) → 生成 Task PRD
+3. Execution (执行) → 完成代码实现
+```
+
+---
+
+# PRD Builder 深度解析
+
+## 规划阶段 - asdm-prd-planning
+
+### 执行步骤
+
+1. 初始化 Features 目录
+2. 生成唯一 Feature ID (FEAT-001-xxx)
+3. 创建 Feature 目录
+4. 生成 Feature PRD
+5. 更新 Feature List
+6. 审查和验证
+
+### 输出产物
+
+- Feature PRD 文档: `.asdm/workspace/features/<id>/feature-prd.md`
+- Features List: `.asdm/workspace/features/features-list.md`
+
+## 分解阶段 - asdm-prd-breakdown
+
+### 执行步骤
+
+1. 识别 Feature 并验证存在
+2. 加载 Feature 上下文
+3. 生成 Task List（不超过10个任务）
+4. 选择要分解的任务
+5. 生成 Task PRD
+6. 更新任务列表状态
+7. 审查验证
+
+---
+
+# 上下文注入机制
+
+## 核心原则
+
+**渐进式加载**: 避免一次性加载过多上下文，采用按需加载方式
+
+### 加载层次
+
+- **初始阶段**: 读取 `index.md`，了解项目整体结构
+- **规划阶段**: 根据功能需求加载相关上下文（如 data-models.md, api.md）
+- **执行阶段**: 根据任务需求加载相关上下文（如 coding-style.md）
+
+## 使用原则
+
+1. **必读 index.md**: 始终首先读取项目入口文件
+2. **按需加载**: 只加载当前任务需要的上下文
+3. **避免过载**: 不一次性加载所有上下文文件
+4. **相关性**: 只请求与当前任务直接相关的上下文
+
+---
+
+# Action 设计原理
+
+## Action 核心组成部分
+
+| 组成部分 | 作用 |
+|----------|------|
+| Purpose | 动作目的说明 |
+| Language Detection | 语言检测与一致性 |
+| Context Injection | 上下文注入策略 |
+| Steps to XXX | 详细执行步骤 |
+| Error Handling | 错误处理 |
+| Output Summary | 输出摘要 |
+
+## 执行步骤四原则
+
+### 1. 线性流程
+步骤按逻辑顺序排列，从初始化到完成
+
+### 2. 可验证
+每个步骤可验证其完成状态
+
+### 3. 可回退
+错误时可回退到上一步
+
+### 4. 用户交互
+关键步骤需要用户确认
+
+---
+
+# 状态管理与任务控制
+
+## 任务状态
+
+| 状态 | 说明 |
+|------|------|
+| TODO | 任务未开始 |
+| IN PROGRESS | 任务进行中 |
+| DONE | 任务完成 |
+| BLOCKED | 任务被阻塞 |
+| CANCELLED | 任务已取消 |
+
+## 状态转换规则
+
+```
+TODO → IN PROGRESS     (任务开始执行)
+IN PROGRESS → DONE     (任务完成)
+IN PROGRESS → BLOCKED  (遇到阻塞)
+BLOCKED → IN PROGRESS  (阻塞解除)
+TODO → CANCELLED       (任务取消)
+```
+
+## 任务数量限制
+
+- 每个功能不超过 **10个** 任务
+- 超过10个建议拆分为子功能
+- 确保每个任务可在 1-2 小时内完成
+
+---
+
+# Skill 与 MCP 扩展
+
+## Skill (技能)
+
+提供特定领域的专业能力
+
+| Skill | 功能 |
+|-------|------|
+| `pdf` | PDF 文件处理 |
+| `xlsx` | Excel 操作 |
+| `docx` | Word 操作 |
+| `json` | JSON/YAML 处理 |
+
+## MCP (模型上下文协议)
+
+提供外部服务连接能力
+
+| MCP | 功能 |
+|-----|------|
+| `database` | 数据库操作 |
+| `storage` | 云存储 |
+| `function` | 云函数 |
+| `deployment` | 部署服务 |
+
+### 重要提示
+
+- Skill 和 MCP 由平台提供，Toolset 开发者只需**使用**
+- 在 Action 中**声明**需要使用的扩展名称
+- 这些扩展对所有 Toolset 都是**全局可用**的
+
+---
+
+# 安全与合规要求
+
+## 安全性要求
+
+- 身份验证和授权要求
+- 输入验证标准
+- 数据加密（静态和传输中）
+- 敏感数据处理和脱敏
+- API 安全措施（限流、CSRF 保护）
+- 会话安全要求
+- 安全响应头配置
+
+## 合规性要求
+
+- 数据分类级别
+- 适用法规（PIPL、GDPR、PCI DSS）
+- 审计追踪和日志要求
+- 数据保留和删除策略
+- 隐私设计考虑
+- 用户同意管理
+- 数据可移植性和删除权
+
+## 测试要求
+
+- 单元测试框架
+- 测试覆盖率目标
+- 集成测试要求
+- 安全和合规验证测试
+
+---
+
+# ASDM 实践案例
+
+## 医疗问诊平台 - qa-live-healthcare
+
+### 项目背景
+
+基于 Vue 3 + TypeScript + Vite 构建的在线医疗问诊平台，使用 ASDM 方法论进行开发管理。
+
+### ASDM 应用
+
+- **Context Builder**: 自动生成项目上下文文档（API、架构、数据模型等）
+- **PRD Builder**: 管理功能需求（医生预约、视频问诊、处方管理等）
+- **Presentation Builder**: 快速构建产品演示站点
+
+### 开发流程
+
+```
+1. Context Build → 理解项目上下文
+2. PRD Planning → 定义功能需求 (FEAT-001-appointment-booking)
+3. PRD Breakdown → 分解为可执行任务
+4. PRD Execution → AI 辅助代码实现
+5. Build Demo → 生成产品演示
+```
+
+---
+
+# 快速开始
+
+## 安装 ASDM Toolset
+
+### 步骤1: 安装 Context Builder
+
+```shell
+Follow instructions in .asdm/toolsets/context-builder/INSTALL.md
+```
+
+### 步骤2: 安装 PRD Builder
+
+```shell
+Follow instructions in .asdm/toolsets/prd-builder/INSTALL.md
+```
+
+### 步骤3: 安装 Presentation Builder
+
+```shell
+Follow instructions in .asdm/toolsets/presentation-builder/INSTALL.md
+```
+
+## 开始使用
+
+```shell
+# 构建项目上下文
+/asdm-context-build
+
+# 规划新功能
+/asdm-prd-planning Add user authentication
+
+# 分解任务
+/asdm-prd-breakdown FEAT-001
+
+# 执行任务
+/asdm-prd-execution TASK-001
+
+# 构建演示
+/asdm-build-demo ./README.md
+```
+
+---
+
+# 愿景与路线图
+
+## 短期目标 (2026 Q2)
+
+- 完善 PRD Builder 的 Skill 生态
+- 支持更多 AI 编码助手平台
+- 优化上下文加载性能
+
+## 中期目标 (2026 Q3-Q4)
+
+- 发布 Code Review Toolset
+- 发布 Test Builder Toolset
+- 支持 MCP 插件市场
+
+## 长期愿景
+
+- 构建完整的 ASDM 工具链生态
+- 实现从需求到部署的全自动化
+- 打造 AI 驱动的软件开发新范式
+
+### 核心使命
+
+> 让 AI 成为每个开发团队的超级助手，让开发者专注于创造，而非重复劳动。

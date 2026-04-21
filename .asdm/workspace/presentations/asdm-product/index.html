@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASDM - AI驱动的软件开发方法论</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-deep: #0f0f1a;
+      --bg-surface: #1a1a2e;
+      --bg-card: #1e1e35;
+      --bg-code: #141422;
+      --accent: #4f46e5;
+      --accent-light: #6366f1;
+      --accent-glow: rgba(79, 70, 229, 0.3);
+      --purple: #7c3aed;
+      --green: #22c55e;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255, 255, 255, 0.08);
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      --font-mono: 'Fira Code', 'Cascadia Code', 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+      --transition: 0.3s ease;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.7;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ===== Landing Page ===== */
+    #landing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #landing::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at 30% 40%, rgba(79, 70, 229, 0.12) 0%, transparent 50%),
+                  radial-gradient(circle at 70% 60%, rgba(124, 58, 237, 0.08) 0%, transparent 50%);
+      animation: bgShift 20s ease-in-out infinite;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-5%, 3%); }
+    }
+
+    #landing > * { position: relative; z-index: 1; }
+
+    .landing-badge {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--accent-light);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      background: rgba(79, 70, 229, 0.08);
+    }
+
+    #landing h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .landing-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      font-weight: 300;
+    }
+
+    .landing-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+      line-height: 1.8;
+    }
+
+    .slide-count-badge {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    #play-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2.5rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 24px var(--accent-glow);
+      font-family: var(--font-sans);
+    }
+
+    #play-btn:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 32px rgba(79, 70, 229, 0.45);
+    }
+
+    #play-btn:active { transform: translateY(0) scale(0.98); }
+
+    .play-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .keyboard-hint {
+      margin-top: 1.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .keyboard-hint kbd {
+      display: inline-block;
+      padding: 0.15rem 0.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* ===== Presentation Mode ===== */
+    #presentation {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      width: 100vw;
+      background: var(--bg-deep);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    #presentation.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    #slide-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+      padding: 2rem 2rem 1rem;
+    }
+
+    .slide {
+      max-width: 900px;
+      width: 100%;
+      display: none;
+      animation: slideIn 0.35s ease;
+    }
+
+    .slide.active { display: block; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--accent);
+      color: var(--text-primary);
+    }
+
+    .slide h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .slide h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .slide h4 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-top: 1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .slide p {
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+      line-height: 1.8;
+    }
+
+    .slide strong { color: var(--text-primary); font-weight: 600; }
+    .slide em { color: var(--accent-light); font-style: italic; }
+
+    .slide ul, .slide ol {
+      margin: 0.5rem 0 1rem 1.5rem;
+      color: var(--text-secondary);
+    }
+
+    .slide li { margin-bottom: 0.4rem; line-height: 1.7; }
+    .slide li::marker { color: var(--accent-light); }
+
+    .slide code {
+      font-family: var(--font-mono);
+      background: var(--bg-code);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.88em;
+      color: #a5b4fc;
+      border: 1px solid var(--border);
+    }
+
+    .slide pre {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin: 0.75rem 0 1rem;
+      overflow-x: auto;
+      line-height: 1.6;
+    }
+
+    .slide pre code {
+      background: none;
+      padding: 0;
+      border: none;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .slide table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 0.75rem 0 1rem;
+      font-size: 0.9rem;
+    }
+
+    .slide th {
+      background: var(--bg-card);
+      color: var(--accent-light);
+      font-weight: 600;
+      padding: 0.65rem 1rem;
+      text-align: left;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .slide td {
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .slide tr:nth-child(even) td { background: rgba(255, 255, 255, 0.02); }
+    .slide tr:hover td { background: rgba(79, 70, 229, 0.06); }
+
+    .slide hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.25rem 0;
+    }
+
+    .slide blockquote {
+      border-left: 3px solid var(--accent);
+      padding: 0.75rem 1.25rem;
+      margin: 1rem 0;
+      background: rgba(79, 70, 229, 0.06);
+      border-radius: 0 8px 8px 0;
+      color: var(--text-secondary);
+      font-style: italic;
+      font-size: 1.05rem;
+    }
+
+    .slide img {
+      max-width: 100%;
+      border-radius: 8px;
+      margin: 0.5rem 0;
+    }
+
+    .slide a {
+      color: var(--accent-light);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--transition);
+    }
+
+    .slide a:hover { border-bottom-color: var(--accent-light); }
+
+    /* ===== Navigation Bar ===== */
+    #nav-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      user-select: none;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 1.1rem;
+      font-family: var(--font-sans);
+    }
+
+    .nav-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .nav-btn:disabled:hover {
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      border-color: var(--border);
+    }
+
+    #progress {
+      flex: 1;
+      height: 4px;
+      background: var(--bg-code);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--purple));
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    #slide-counter {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    #exit-btn { font-size: 1rem; }
+
+    /* ===== Scrollbar ===== */
+    #slide-container::-webkit-scrollbar { width: 6px; }
+    #slide-container::-webkit-scrollbar-track { background: transparent; }
+    #slide-container::-webkit-scrollbar-thumb {
+      background: var(--text-muted);
+      border-radius: 3px;
+    }
+    #slide-container::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 768px) {
+      #landing h1 { font-size: 2rem; }
+      .slide-title { font-size: 1.5rem; }
+      .slide h2 { font-size: 1.2rem; }
+      #nav-bar { padding: 0.5rem 1rem; gap: 0.5rem; }
+      .nav-btn { width: 36px; height: 36px; }
+    }
+
+    /* ===== Fullscreen adjustments ===== */
+    :fullscreen #nav-bar,
+    :-webkit-full-screen #nav-bar {
+      padding: 0.75rem 2rem;
+    }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== Landing Page ===== -->
+  <div id="landing">
+    <div class="landing-badge">Agentic Software Development Methodology</div>
+    <h1>ASDM</h1>
+    <div class="landing-subtitle">AI驱动的软件开发方法论</div>
+    <p class="landing-desc">
+      ASDM 是一种以 AI Agent 为核心的软件开发方法论，通过人机协作实现高效、规范、可追踪的软件开发流程。
+      开发人员只需描述"做什么"，AI 会负责实现"怎么做"。
+    </p>
+    <div class="slide-count-badge">12 张演示页面</div>
+    <button id="play-btn" aria-label="开始演示">
+      <svg class="play-icon" viewBox="0 0 24 24"><polygon points="5,3 19,12 5,21"/></svg>
+      开始播放
+    </button>
+    <div class="keyboard-hint">
+      使用 <kbd>←</kbd> <kbd>→</kbd> 切换页面 · <kbd>Esc</kbd> 退出全屏
+    </div>
+  </div>
+
+  <!-- ===== Presentation Mode ===== -->
+  <div id="presentation">
+    <div id="slide-container">
+      <!-- Slides rendered by JavaScript -->
+    </div>
+    <div id="nav-bar">
+      <button class="nav-btn" id="prev-btn" aria-label="上一页">←</button>
+      <div id="progress"><div id="progress-bar"></div></div>
+      <span id="slide-counter">1 / 12</span>
+      <button class="nav-btn" id="next-btn" aria-label="下一页">→</button>
+      <button class="nav-btn" id="exit-btn" aria-label="退出演示">✕</button>
+    </div>
+  </div>
+
+  <script>
+    // ===== Slide Data =====
+    const slides = [
+      {
+        title: "ASDM - AI驱动的软件开发方法论",
+        content: `<p><strong>Agentic Software Development Methodology</strong></p>
+<p>ASDM 是一种以 AI Agent 为核心的软件开发方法论，通过人机协作实现高效、规范、可追踪的软件开发流程。</p>
+<hr>`
+      },
+      {
+        title: "什么是 ASDM？",
+        content: `<h2>核心理念</h2>
+<p>ASDM 的核心原则：<strong>开发人员只需描述"做什么"，AI 会负责实现"怎么做"</strong></p>
+<h3>三大支柱</h3>
+<ul>
+<li><strong>自动化</strong>: 通过 AI 自动完成繁琐的开发任务</li>
+<li><strong>规范化</strong>: 使用统一的模板和流程确保开发质量</li>
+<li><strong>可追踪</strong>: 记录所有开发活动，便于审计和回溯</li>
+</ul>
+<h3>价值主张</h3>
+<ul>
+<li>🚀 开发效率提升 3-5 倍</li>
+<li>📋 流程标准化，减少沟通成本</li>
+<li>🔍 全流程可追溯，质量有保障</li>
+<li>🤖 AI 辅助决策，降低技术门槛</li>
+</ul>`
+      },
+      {
+        title: "ASDM 人员与 AI 职责分工",
+        content: `<h2>开发人员职责</h2>
+<ul>
+<li>编写 README.md 描述工具集的功能和使用方式</li>
+<li>提供示例，说明期望的输入输出</li>
+<li>验证结果，检查 AI 生成的工具集是否符合要求</li>
+</ul>
+<h2>AI 职责</h2>
+<ul>
+<li>生成 actions/ 目录，根据 README.md 自动生成动作指令</li>
+<li>生成 spec/ 目录，创建输出文档的模板</li>
+<li>生成 INSTALL.md，创建安装步骤文档</li>
+</ul>
+<h3>协作模式</h3>
+<pre><code>开发人员 → 编写 README.md → 描述"做什么"
+    ↓
+AI Agent → 生成 Actions &amp; Specs → 实现"怎么做"
+    ↓
+开发人员 → 验证输出 → 确认质量</code></pre>`
+      },
+      {
+        title: "ASDM 项目目录结构",
+        content: `<h2>核心目录</h2>
+<pre><code>.asdm/
+├── contexts/              # 通用上下文
+│   ├── index.md          # 入口文件（必读）
+│   ├── architecture.md   # 架构设计
+│   ├── data-models.md    # 数据模型
+│   └── api.md            # API 文档
+├── toolsets/             # 工具集
+│   ├── context-builder/  # 上下文构建器
+│   ├── prd-builder/      # PRD 构建器
+│   └── presentation-builder/  # 演示构建器
+└── workspace/            # 工作区
+    └── features/         # 功能特性</code></pre>
+<h2>上下文文件说明</h2>
+<h3>渐进式加载策略</h3>
+<table>
+<thead><tr><th>阶段</th><th>加载内容</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>初始阶段</td><td>index.md</td><td>必读，了解项目整体结构</td></tr>
+<tr><td>规划阶段</td><td>按需加载</td><td>根据功能需求加载相关上下文</td></tr>
+<tr><td>执行阶段</td><td>按需加载</td><td>根据任务需求加载相关上下文</td></tr>
+</tbody>
+</table>`
+      },
+      {
+        title: "ASDM Toolset 体系",
+        content: `<h2>已有工具集</h2>
+<h3>Context Builder (上下文构建器)</h3>
+<ul>
+<li><strong>toolset-id</strong>: <code>context-builder</code></li>
+<li><strong>功能</strong>: 自动分析项目代码，生成标准化上下文文档</li>
+<li><strong>命令</strong>: <code>/asdm-context-build</code>, <code>/asdm-context-update</code></li>
+</ul>
+<h3>PRD Builder (PRD构建器)</h3>
+<ul>
+<li><strong>toolset-id</strong>: <code>prd-builder</code></li>
+<li><strong>功能</strong>: 从需求描述到任务执行的完整开发流程管理</li>
+<li><strong>命令</strong>: <code>/asdm-prd-planning</code>, <code>/asdm-prd-breakdown</code>, <code>/asdm-prd-execution</code></li>
+</ul>
+<h3>Presentation Builder (演示构建器)</h3>
+<ul>
+<li><strong>toolset-id</strong>: <code>presentation-builder</code></li>
+<li><strong>功能</strong>: 将 Markdown 文件转换为交互式演示网站</li>
+<li><strong>命令</strong>: <code>/asdm-build-demo</code>, <code>/asdm-preview-demo</code></li>
+</ul>
+<h2>三阶段工作流</h2>
+<pre><code>1. Planning (规划) → 生成 Feature PRD
+2. Breakdown (分解) → 生成 Task PRD
+3. Execution (执行) → 完成代码实现</code></pre>`
+      },
+      {
+        title: "PRD Builder 深度解析",
+        content: `<h2>规划阶段 - asdm-prd-planning</h2>
+<h3>执行步骤</h3>
+<ol>
+<li>初始化 Features 目录</li>
+<li>生成唯一 Feature ID (FEAT-001-xxx)</li>
+<li>创建 Feature 目录</li>
+<li>生成 Feature PRD</li>
+<li>更新 Feature List</li>
+<li>审查和验证</li>
+</ol>
+<h3>输出产物</h3>
+<ul>
+<li>Feature PRD 文档: <code>.asdm/workspace/features/&lt;id&gt;/feature-prd.md</code></li>
+<li>Features List: <code>.asdm/workspace/features/features-list.md</code></li>
+</ul>
+<h2>分解阶段 - asdm-prd-breakdown</h2>
+<h3>执行步骤</h3>
+<ol>
+<li>识别 Feature 并验证存在</li>
+<li>加载 Feature 上下文</li>
+<li>生成 Task List（不超过10个任务）</li>
+<li>选择要分解的任务</li>
+<li>生成 Task PRD</li>
+<li>更新任务列表状态</li>
+<li>审查验证</li>
+</ol>`
+      },
+      {
+        title: "上下文注入机制",
+        content: `<h2>核心原则</h2>
+<p><strong>渐进式加载</strong>: 避免一次性加载过多上下文，采用按需加载方式</p>
+<h3>加载层次</h3>
+<ul>
+<li><strong>初始阶段</strong>: 读取 <code>index.md</code>，了解项目整体结构</li>
+<li><strong>规划阶段</strong>: 根据功能需求加载相关上下文（如 data-models.md, api.md）</li>
+<li><strong>执行阶段</strong>: 根据任务需求加载相关上下文（如 coding-style.md）</li>
+</ul>
+<h2>使用原则</h2>
+<ol>
+<li><strong>必读 index.md</strong>: 始终首先读取项目入口文件</li>
+<li><strong>按需加载</strong>: 只加载当前任务需要的上下文</li>
+<li><strong>避免过载</strong>: 不一次性加载所有上下文文件</li>
+<li><strong>相关性</strong>: 只请求与当前任务直接相关的上下文</li>
+</ol>`
+      },
+      {
+        title: "Action 设计原理",
+        content: `<h2>Action 核心组成部分</h2>
+<table>
+<thead><tr><th>组成部分</th><th>作用</th></tr></thead>
+<tbody>
+<tr><td>Purpose</td><td>动作目的说明</td></tr>
+<tr><td>Language Detection</td><td>语言检测与一致性</td></tr>
+<tr><td>Context Injection</td><td>上下文注入策略</td></tr>
+<tr><td>Steps to XXX</td><td>详细执行步骤</td></tr>
+<tr><td>Error Handling</td><td>错误处理</td></tr>
+<tr><td>Output Summary</td><td>输出摘要</td></tr>
+</tbody>
+</table>
+<h2>执行步骤四原则</h2>
+<h3>1. 线性流程</h3>
+<p>步骤按逻辑顺序排列，从初始化到完成</p>
+<h3>2. 可验证</h3>
+<p>每个步骤可验证其完成状态</p>
+<h3>3. 可回退</h3>
+<p>错误时可回退到上一步</p>
+<h3>4. 用户交互</h3>
+<p>关键步骤需要用户确认</p>`
+      },
+      {
+        title: "状态管理与任务控制",
+        content: `<h2>任务状态</h2>
+<table>
+<thead><tr><th>状态</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>TODO</td><td>任务未开始</td></tr>
+<tr><td>IN PROGRESS</td><td>任务进行中</td></tr>
+<tr><td>DONE</td><td>任务完成</td></tr>
+<tr><td>BLOCKED</td><td>任务被阻塞</td></tr>
+<tr><td>CANCELLED</td><td>任务已取消</td></tr>
+</tbody>
+</table>
+<h2>状态转换规则</h2>
+<pre><code>TODO → IN PROGRESS     (任务开始执行)
+IN PROGRESS → DONE     (任务完成)
+IN PROGRESS → BLOCKED  (遇到阻塞)
+BLOCKED → IN PROGRESS  (阻塞解除)
+TODO → CANCELLED       (任务取消)</code></pre>
+<h2>任务数量限制</h2>
+<ul>
+<li>每个功能不超过 <strong>10个</strong> 任务</li>
+<li>超过10个建议拆分为子功能</li>
+<li>确保每个任务可在 1-2 小时内完成</li>
+</ul>`
+      },
+      {
+        title: "Skill 与 MCP 扩展",
+        content: `<h2>Skill (技能)</h2>
+<p>提供特定领域的专业能力</p>
+<table>
+<thead><tr><th>Skill</th><th>功能</th></tr></thead>
+<tbody>
+<tr><td><code>pdf</code></td><td>PDF 文件处理</td></tr>
+<tr><td><code>xlsx</code></td><td>Excel 操作</td></tr>
+<tr><td><code>docx</code></td><td>Word 操作</td></tr>
+<tr><td><code>json</code></td><td>JSON/YAML 处理</td></tr>
+</tbody>
+</table>
+<h2>MCP (模型上下文协议)</h2>
+<p>提供外部服务连接能力</p>
+<table>
+<thead><tr><th>MCP</th><th>功能</th></tr></thead>
+<tbody>
+<tr><td><code>database</code></td><td>数据库操作</td></tr>
+<tr><td><code>storage</code></td><td>云存储</td></tr>
+<tr><td><code>function</code></td><td>云函数</td></tr>
+<tr><td><code>deployment</code></td><td>部署服务</td></tr>
+</tbody>
+</table>
+<h3>重要提示</h3>
+<ul>
+<li>Skill 和 MCP 由平台提供，Toolset 开发者只需<strong>使用</strong></li>
+<li>在 Action 中<strong>声明</strong>需要使用的扩展名称</li>
+<li>这些扩展对所有 Toolset 都是<strong>全局可用</strong>的</li>
+</ul>`
+      },
+      {
+        title: "安全与合规要求",
+        content: `<h2>安全性要求</h2>
+<ul>
+<li>身份验证和授权要求</li>
+<li>输入验证标准</li>
+<li>数据加密（静态和传输中）</li>
+<li>敏感数据处理和脱敏</li>
+<li>API 安全措施（限流、CSRF 保护）</li>
+<li>会话安全要求</li>
+<li>安全响应头配置</li>
+</ul>
+<h2>合规性要求</h2>
+<ul>
+<li>数据分类级别</li>
+<li>适用法规（PIPL、GDPR、PCI DSS）</li>
+<li>审计追踪和日志要求</li>
+<li>数据保留和删除策略</li>
+<li>隐私设计考虑</li>
+<li>用户同意管理</li>
+<li>数据可移植性和删除权</li>
+</ul>
+<h2>测试要求</h2>
+<ul>
+<li>单元测试框架</li>
+<li>测试覆盖率目标</li>
+<li>集成测试要求</li>
+<li>安全和合规验证测试</li>
+</ul>`
+      },
+      {
+        title: "ASDM 实践案例",
+        content: `<h2>医疗问诊平台 - qa-live-healthcare</h2>
+<h3>项目背景</h3>
+<p>基于 Vue 3 + TypeScript + Vite 构建的在线医疗问诊平台，使用 ASDM 方法论进行开发管理。</p>
+<h3>ASDM 应用</h3>
+<ul>
+<li><strong>Context Builder</strong>: 自动生成项目上下文文档（API、架构、数据模型等）</li>
+<li><strong>PRD Builder</strong>: 管理功能需求（医生预约、视频问诊、处方管理等）</li>
+<li><strong>Presentation Builder</strong>: 快速构建产品演示站点</li>
+</ul>
+<h3>开发流程</h3>
+<pre><code>1. Context Build → 理解项目上下文
+2. PRD Planning → 定义功能需求 (FEAT-001-appointment-booking)
+3. PRD Breakdown → 分解为可执行任务
+4. PRD Execution → AI 辅助代码实现
+5. Build Demo → 生成产品演示</code></pre>`
+      },
+      {
+        title: "快速开始",
+        content: `<h2>安装 ASDM Toolset</h2>
+<h3>步骤1: 安装 Context Builder</h3>
+<pre><code>Follow instructions in .asdm/toolsets/context-builder/INSTALL.md</code></pre>
+<h3>步骤2: 安装 PRD Builder</h3>
+<pre><code>Follow instructions in .asdm/toolsets/prd-builder/INSTALL.md</code></pre>
+<h3>步骤3: 安装 Presentation Builder</h3>
+<pre><code>Follow instructions in .asdm/toolsets/presentation-builder/INSTALL.md</code></pre>
+<h2>开始使用</h2>
+<pre><code># 构建项目上下文
+/asdm-context-build
+
+# 规划新功能
+/asdm-prd-planning Add user authentication
+
+# 分解任务
+/asdm-prd-breakdown FEAT-001
+
+# 执行任务
+/asdm-prd-execution TASK-001
+
+# 构建演示
+/asdm-build-demo ./README.md</code></pre>`
+      },
+      {
+        title: "愿景与路线图",
+        content: `<h2>短期目标 (2026 Q2)</h2>
+<ul>
+<li>完善 PRD Builder 的 Skill 生态</li>
+<li>支持更多 AI 编码助手平台</li>
+<li>优化上下文加载性能</li>
+</ul>
+<h2>中期目标 (2026 Q3-Q4)</h2>
+<ul>
+<li>发布 Code Review Toolset</li>
+<li>发布 Test Builder Toolset</li>
+<li>支持 MCP 插件市场</li>
+</ul>
+<h2>长期愿景</h2>
+<ul>
+<li>构建完整的 ASDM 工具链生态</li>
+<li>实现从需求到部署的全自动化</li>
+<li>打造 AI 驱动的软件开发新范式</li>
+</ul>
+<h3>核心使命</h3>
+<blockquote>让 AI 成为每个开发团队的超级助手，让开发者专注于创造，而非重复劳动。</blockquote>`
+      }
+    ];
+
+    // ===== App State =====
+    let currentSlide = 0;
+    const totalSlides = slides.length;
+
+    // ===== DOM Elements =====
+    const landing = document.getElementById('landing');
+    const presentation = document.getElementById('presentation');
+    const slideContainer = document.getElementById('slide-container');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const exitBtn = document.getElementById('exit-btn');
+    const playBtn = document.getElementById('play-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const slideCounter = document.getElementById('slide-counter');
+
+    // ===== Initialize Slides =====
+    function initSlides() {
+      slideContainer.innerHTML = '';
+      slides.forEach((slide, i) => {
+        const div = document.createElement('div');
+        div.className = 'slide' + (i === 0 ? ' active' : '');
+        div.innerHTML = `<h1 class="slide-title">${slide.title}</h1>${slide.content}`;
+        slideContainer.appendChild(div);
+      });
+      updateNav();
+    }
+
+    // ===== Navigation =====
+    function goToSlide(index) {
+      if (index < 0 || index >= totalSlides) return;
+      const slideEls = slideContainer.querySelectorAll('.slide');
+      slideEls[currentSlide].classList.remove('active');
+      currentSlide = index;
+      slideEls[currentSlide].classList.add('active');
+      slideContainer.scrollTop = 0;
+      updateNav();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    function updateNav() {
+      prevBtn.disabled = currentSlide === 0;
+      nextBtn.disabled = currentSlide === totalSlides - 1;
+      progressBar.style.width = ((currentSlide + 1) / totalSlides * 100) + '%';
+      slideCounter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+    }
+
+    // ===== Fullscreen =====
+    function enterPresentation() {
+      landing.classList.add('hidden');
+      presentation.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      goToSlide(0);
+      const el = document.documentElement;
+      if (el.requestFullscreen) el.requestFullscreen().catch(() => {});
+      else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    }
+
+    function exitPresentation() {
+      presentation.classList.remove('active');
+      landing.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+      else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+    }
+
+    // ===== Event Listeners =====
+    playBtn.addEventListener('click', enterPresentation);
+    exitBtn.addEventListener('click', exitPresentation);
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+
+    document.addEventListener('keydown', (e) => {
+      if (!presentation.classList.contains('active')) return;
+      switch (e.key) {
+        case 'ArrowRight':
+        case ' ':
+          e.preventDefault();
+          nextSlide();
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          prevSlide();
+          break;
+        case 'Escape':
+          e.preventDefault();
+          exitPresentation();
+          break;
+        case 'Home':
+          e.preventDefault();
+          goToSlide(0);
+          break;
+        case 'End':
+          e.preventDefault();
+          goToSlide(totalSlides - 1);
+          break;
+      }
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && presentation.classList.contains('active')) {
+        // User exited fullscreen via browser, stay in presentation but not browser-fullscreen
+      }
+    });
+
+    // ===== Init =====
+    initSlides();
+  </script>
+</body>
+</html>
