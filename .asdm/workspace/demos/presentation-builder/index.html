@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ASDM - AI驱动的软件开发方法论</title>
+  <link rel="stylesheet" href="/src/css/style.css" />
+</head>
+<body>
+  <div id="landing-page">
+    <span class="landing-badge">Agentic Software Development Methodology</span>
+    <h1 class="landing-title">ASDM</h1>
+    <p class="landing-subtitle">AI驱动的软件开发方法论<br><span style="opacity:0.7;font-size:0.95rem">ASDM 是一种以 AI Agent 为核心的软件开发方法论，通过人机协作实现高效、规范、可追踪的软件开发流程。开发人员只需描述"做什么"，AI 会负责实现"怎么做"。</span></p>
+    <button id="play-btn" class="play-btn" aria-label="开始播放">
+      <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+        <polygon points="8,5 20,12 8,19" fill="currentColor"/>
+      </svg>
+      <span>开始播放</span>
+    </button>
+    <p class="landing-info"><span id="slide-count">14</span> 张演示页面</p>
+    <p class="landing-hint">使用 ← → 切换页面 · Esc 退出全屏</p>
+  </div>
+
+  <div id="presentation" class="presentation hidden">
+    <div id="slides-viewport">
+      <div id="slides-track"></div>
+    </div>
+    <div class="slide-nav">
+      <button id="prev-btn" class="nav-btn" aria-label="上一页">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span id="slide-indicator" class="slide-indicator">1 / 14</span>
+      <button id="next-btn" class="nav-btn" aria-label="下一页">
+        <svg viewBox="0 0 24 24" width="20" height="20"><path d="M9 18l6-6-6-6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="nav-progress">
+        <div id="progress-bar" class="nav-progress-bar"></div>
+      </div>
+      <button id="exit-btn" class="exit-btn" aria-label="退出">
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 17 21 12 16 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><line x1="21" y1="12" x2="9" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>退出</span>
+      </button>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
